@@ -39,9 +39,9 @@
 
 <!-- CONTA SHARK ANCHOR -->
 <div class="product">
-    <strong>Shark Anchor + Doug + Gas + Venom</strong>
+    <strong>Shark Anchor + Doug + Gas + Venom + Shark V2/V3</strong>
     <span class="small">Lv. 2800</span>
-    <br><span class="small">R$ 40</span>
+    <br><span class="small" style="color:#333;">R$ 26,00</span>
 
     <img src="https://i.imgur.com/1QeQZ4t.png"
          style="width:100%; max-width:300px; border-radius:10px; margin-top:12px;">
@@ -51,17 +51,17 @@
     </button>
 </div>
 
-<!-- CONTA BUDDHA FREE -->
+<!-- CONTA BUDDHA -->
 <div class="product">
     <strong>Buddha + CDK</strong>
     <span class="small">Lv. 2800</span>
-    <br><span class="small" style="color:green;">R$ 0 (FREE)</span>
+    <br><span class="small" style="color:#333;">R$ 19,90</span>
 
     <img src="https://i.imgur.com/1QeQZ4t.png"
          style="width:100%; max-width:300px; border-radius:10px; margin-top:12px;">
 
     <button onclick="abrirEntrega('AlbertGrimes259','secret244')">
-        PEGAR GRÁTIS
+        Comprar
     </button>
 </div>
 
