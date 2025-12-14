@@ -4,98 +4,140 @@
 <meta charset="UTF-8">
 <title>Blox Mundial – Loja de Contas</title>
 <style>
-    body { font-family: Arial; background:#f1f1f1; padding:20px; }
-    h2 { margin-top:30px; }
-    .product {
-        margin-bottom:18px; padding:12px; border:1px solid #ccc;
-        border-radius:10px; background:white;
-    }
-    .small { opacity:.8; font-size:13px; }
-    button {
-        width:100%; padding:10px; border:none;
-        background:#4CAF50; color:white;
-        border-radius:8px; margin-top:10px; cursor:pointer;
-    }
-    #entrega {
-        display:none; position:fixed; top:0; left:0;
-        width:100%; height:100%;
-        background:rgba(0,0,0,0.6);
-        justify-content:center; align-items:center;
-    }
-    #entregaBox {
-        background:white; padding:20px; border-radius:10px;
-        width:90%; max-width:350px;
-    }
-    input {
-        width:100%; padding:8px; margin-bottom:10px;
-        border:1px solid #aaa; border-radius:6px;
-    }
+body {
+    font-family: Arial, sans-serif;
+    background:#f2f2f2;
+    padding:20px;
+}
+h2 { margin-bottom:20px; }
+.product {
+    background:#fff;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:20px;
+    border:1px solid #ccc;
+}
+.small { font-size:13px; color:#555; }
+.price { font-weight:bold; margin-top:5px; }
+
+button {
+    width:100%;
+    padding:10px;
+    margin-top:12px;
+    border:none;
+    border-radius:8px;
+    background:#4CAF50;
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+}
+
+button.disabled {
+    background:#999;
+    cursor:not-allowed;
+}
+
+.warning {
+    background:#ffe5e5;
+    color:#b30000;
+    padding:8px;
+    border-radius:8px;
+    font-size:13px;
+    margin-bottom:10px;
+}
+img {
+    display:block;
+    margin:15px auto;
+    max-width:220px;
+}
+#entrega {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.6);
+    justify-content:center;
+    align-items:center;
+}
+#box {
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    width:90%;
+    max-width:320px;
+}
+input {
+    width:100%;
+    padding:8px;
+    margin-bottom:8px;
+}
 </style>
 </head>
-
 <body>
 
-<h2>Contas à Venda</h2>
+<h2>Contas Blox Fruits</h2>
 
-<!-- CONTA SHARK ANCHOR -->
+<!-- CONTA SHARK ANCHOR / KITSUNE (INDISPONÍVEL) -->
 <div class="product">
-    <strong>Shark Anchor + Doug + Gas + Venom + Shark V2/V3</strong>
-    <span class="small">Lv. 2800</span>
-    <br><span class="small" style="color:#333;">R$ 26,00</span>
+    <div class="warning">
+        ⚠ Conta teste / não funciona<br>
+        Conta já tem dono<br>
+        Conta é do dono da loja
+    </div>
 
-    <img src="https://i.imgur.com/1QeQZ4t.png"
-         style="width:100%; max-width:300px; border-radius:10px; margin-top:12px;">
+    <strong>Shark Anchor + Kitsune</strong>
+    <div class="small">Nível 2800</div>
+    <div class="price">INDISPONÍVEL</div>
 
-    <button onclick="abrirEntrega('ClarenceMcintyre4402','valeria2')">
-        Comprar
-    </button>
+    <img src="https://i.imgur.com/1QeQZ4t.png">
+
+    <button class="disabled" disabled>Indisponível</button>
 </div>
 
 <!-- CONTA BUDDHA -->
 <div class="product">
     <strong>Buddha + CDK</strong>
-    <span class="small">Lv. 2800</span>
-    <br><span class="small" style="color:#333;">R$ 19,90</span>
+    <div class="small">Nível 2800</div>
+    <div class="price">R$ 19,90</div>
 
-    <img src="https://i.imgur.com/1QeQZ4t.png"
-         style="width:100%; max-width:300px; border-radius:10px; margin-top:12px;">
+    <!-- IMAGEM QUE VOCÊ MANDOU -->
+    <img src="imagem-buddha.png" alt="Buddha">
 
     <button onclick="abrirEntrega('AlbertGrimes259','secret244')">
         Comprar
     </button>
 </div>
 
-<!-- JANELA ENTREGA -->
+<!-- ENTREGA -->
 <div id="entrega">
-    <div id="entregaBox">
-        <h3>Informações da Conta</h3>
+    <div id="box">
+        <h3>Dados da Conta</h3>
 
-        <label>Usuário:</label>
-        <input id="usuario" readonly>
-        <button onclick="copiar('usuario')">Copiar Usuário</button>
+        <label>Usuário</label>
+        <input id="user" readonly>
+        <button onclick="copiar('user')">Copiar Usuário</button>
 
-        <label>Senha:</label>
-        <input id="senha" readonly>
-        <button onclick="copiar('senha')">Copiar Senha</button>
+        <label>Senha</label>
+        <input id="pass" readonly>
+        <button onclick="copiar('pass')">Copiar Senha</button>
 
-        <button onclick="fecharEntrega()" style="background:#d9534f; margin-top:15px;">Fechar</button>
+        <button onclick="fechar()" style="background:#d9534f;margin-top:10px;">
+            Fechar
+        </button>
     </div>
 </div>
 
 <script>
-function abrirEntrega(user, pass) {
-    document.getElementById("usuario").value = user;
-    document.getElementById("senha").value = pass;
-    document.getElementById("entrega").style.display = "flex";
+function abrirEntrega(u,p){
+    document.getElementById("user").value=u;
+    document.getElementById("pass").value=p;
+    document.getElementById("entrega").style.display="flex";
 }
-
-function fecharEntrega() {
-    document.getElementById("entrega").style.display = "none";
+function fechar(){
+    document.getElementById("entrega").style.display="none";
 }
-
-function copiar(id) {
-    let input = document.getElementById(id);
-    input.select();
+function copiar(id){
+    let el=document.getElementById(id);
+    el.select();
     document.execCommand("copy");
 }
 </script>
