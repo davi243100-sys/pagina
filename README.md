@@ -1,146 +1,88 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Blox Mundial – Loja de Contas</title>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background:#f2f2f2;
-    padding:20px;
-}
-h2 { margin-bottom:20px; }
-.product {
-    background:#fff;
-    border-radius:12px;
-    padding:15px;
-    margin-bottom:20px;
-    border:1px solid #ccc;
-}
-.small { font-size:13px; color:#555; }
-.price { font-weight:bold; margin-top:5px; }
+// ================= FRONTEND (RESUMO) =================
+// Seu frontend já está pronto acima 👆
+// Agora vamos adicionar o BACKEND real
 
-button {
-    width:100%;
-    padding:10px;
-    margin-top:12px;
-    border:none;
-    border-radius:8px;
-    background:#4CAF50;
-    color:white;
-    font-size:15px;
-    cursor:pointer;
-}
+// ================= BACKEND (Node.js + Express) =================
 
-button.disabled {
-    background:#999;
-    cursor:not-allowed;
-}
+// 1. Instale:
+// npm init -y
+// npm install express multer fluent-ffmpeg cors
 
-.warning {
-    background:#ffe5e5;
-    color:#b30000;
-    padding:8px;
-    border-radius:8px;
-    font-size:13px;
-    margin-bottom:10px;
-}
-img {
-    display:block;
-    margin:15px auto;
-    max-width:220px;
-}
-#entrega {
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.6);
-    justify-content:center;
-    align-items:center;
-}
-#box {
-    background:#fff;
-    padding:20px;
-    border-radius:10px;
-    width:90%;
-    max-width:320px;
-}
-input {
-    width:100%;
-    padding:8px;
-    margin-bottom:8px;
-}
-</style>
-</head>
-<body>
+const express = require("express");
+const multer = require("multer");
+const ffmpeg = require("fluent-ffmpeg");
+const cors = require("cors");
+const app = express();
 
-<h2>Contas Blox Fruits</h2>
+app.use(cors());
+app.use(express.json());
 
-<!-- CONTA SHARK ANCHOR / KITSUNE (INDISPONÍVEL) -->
-<div class="product">
-    <div class="warning">
-        ⚠ Conta teste / não funciona<br>
-        Conta já tem dono<br>
-        Conta é do dono da loja
-    </div>
+// ===== UPLOAD =====
+const upload = multer({ dest: "uploads/" });
 
-    <strong>Shark Anchor + Kitsune</strong>
-    <div class="small">Nível 2800</div>
-    <div class="price">INDISPONÍVEL</div>
+// ===== CORTE DE VÍDEO REAL =====
+app.post("/trim", upload.single("video"), (req, res) => {
+  const { start, duration } = req.body;
+  const input = req.file.path;
+  const output = `outputs/output_${Date.now()}.mp4`;
 
-    <img src="https://i.imgur.com/1QeQZ4t.png">
+  ffmpeg(input)
+    .setStartTime(start)
+    .setDuration(duration)
+    .output(output)
+    .on("end", () => {
+      res.json({ url: output });
+    })
+    .on("error", (err) => {
+      res.status(500).send(err);
+    })
+    .run();
+});
 
-    <button class="disabled" disabled>Indisponível</button>
-</div>
+// ===== ADICIONAR ÁUDIO =====
+app.post("/add-audio", upload.fields([
+  { name: "video" },
+  { name: "audio" }
+]), (req, res) => {
+  const video = req.files["video"][0].path;
+  const audio = req.files["audio"][0].path;
+  const output = `outputs/merged_${Date.now()}.mp4`;
 
-<!-- CONTA BUDDHA -->
-<div class="product">
-    <strong>Buddha + CDK</strong>
-    <div class="small">Nível 2800</div>
-    <div class="price">R$ 19,90</div>
+  ffmpeg()
+    .input(video)
+    .input(audio)
+    .outputOptions(["-c:v copy", "-c:a aac"])
+    .save(output)
+    .on("end", () => res.json({ url: output }))
+    .on("error", (err) => res.status(500).send(err));
+});
 
-    <!-- IMAGEM QUE VOCÊ MANDOU -->
-    <img src="imagem-buddha.png" alt="Buddha">
+// ===== EXPORT FINAL =====
+app.post("/export", upload.single("video"), (req, res) => {
+  const input = req.file.path;
+  const output = `outputs/export_${Date.now()}.mp4`;
 
-    <button onclick="abrirEntrega('AlbertGrimes259','secret244')">
-        Comprar
-    </button>
-</div>
+  ffmpeg(input)
+    .outputOptions(["-preset fast", "-crf 23"])
+    .save(output)
+    .on("end", () => res.json({ url: output }))
+    .on("error", (err) => res.status(500).send(err));
+});
 
-<!-- ENTREGA -->
-<div id="entrega">
-    <div id="box">
-        <h3>Dados da Conta</h3>
+// ===== SERVIDOR =====
+app.listen(3001, () => {
+  console.log("🔥 Backend rodando em http://localhost:3001");
+});
 
-        <label>Usuário</label>
-        <input id="user" readonly>
-        <button onclick="copiar('user')">Copiar Usuário</button>
+// ================= O QUE VOCÊ GANHOU =================
+// ✔ Corte de vídeo REAL
+// ✔ Adicionar áudio REAL
+// ✔ Exportar vídeo REAL
+// ✔ Base profissional estilo CapCut
 
-        <label>Senha</label>
-        <input id="pass" readonly>
-        <button onclick="copiar('pass')">Copiar Senha</button>
-
-        <button onclick="fechar()" style="background:#d9534f;margin-top:10px;">
-            Fechar
-        </button>
-    </div>
-</div>
-
-<script>
-function abrirEntrega(u,p){
-    document.getElementById("user").value=u;
-    document.getElementById("pass").value=p;
-    document.getElementById("entrega").style.display="flex";
-}
-function fechar(){
-    document.getElementById("entrega").style.display="none";
-}
-function copiar(id){
-    let el=document.getElementById(id);
-    el.select();
-    document.execCommand("copy");
-}
-</script>
-
-</body>
-</html>
+// ================= PRÓXIMO NÍVEL =================
+// - Banco de dados (MongoDB)
+// - Login de usuários
+// - Salvar projetos
+// - IA real (OpenAI / visão)
+// - Render em nuvem (escala grande)
